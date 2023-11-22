@@ -27,7 +27,7 @@ window.onload = function() {
 <body>
 <div class="page-main">
 	<h2>뉴스 수정</h2>
-	<form id="modify_form" action="modify.do" method="post">
+	<form id="modify_form" action="modify.do" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="num" value="${newsVO.num}">
 		<ul>
 			<li>

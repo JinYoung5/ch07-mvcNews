@@ -3,9 +3,12 @@
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.oreilly.servlet.MultipartRequest;
+
 import kr.controller.Action;
 import kr.news.dao.NewsDAO;
 import kr.news.vo.NewsVO;
+import kr.util.FileUtil;
 
 public class ModifyAction implements Action{
 
@@ -13,24 +16,25 @@ public class ModifyAction implements Action{
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		request.setCharacterEncoding("utf-8");
 		
-		NewsVO newsVO = new NewsVO();
-		newsVO.setNum(Integer.parseInt(request.getParameter("num")));
-		newsVO.setTitle(request.getParameter("title"));
-		newsVO.setWriter(request.getParameter("writer"));
-		newsVO.setPasswd(request.getParameter("passwd"));
-		newsVO.setEmail(request.getParameter("email"));
-		newsVO.setArticle(request.getParameter("article"));
-		newsVO.setFilename(request.getParameter("filename"));
+		MultipartRequest multi = FileUtil.createFile(request);
+		NewsVO vo = new NewsVO();
+		vo.setNum(Integer.parseInt(multi.getParameter("num")));
+		vo.setTitle(multi.getParameter("title"));
+		vo.setWriter(multi.getParameter("writer"));
+		vo.setPasswd(multi.getParameter("passwd"));
+		vo.setEmail(multi.getParameter("email"));
+		vo.setArticle(multi.getParameter("article"));
+		vo.setFilename(multi.getFilesystemName("filename"));
 		
 		NewsDAO dao = NewsDAO.getInstance();
-		NewsVO db_news = dao.getNews(newsVO.getNum());
+		NewsVO db_news = dao.getNews(vo.getNum());
 		boolean check = false;
-		if(db_news != null) {
-			check = db_news.isCheckedPassword(newsVO.getPasswd());
+		if(db_news!=null) {
+			check =db_news.isCheckedPassword(vo.getPasswd());
 		}
 		if(check) {
-			dao.updateNews(newsVO);
-			request.setAttribute("num", newsVO.getNum());
+			dao.updateNews(vo);
+			request.setAttribute("num", vo.getNum());
 		}
 		request.setAttribute("check", check);
 		return "/WEB-INF/views/modify.jsp";
