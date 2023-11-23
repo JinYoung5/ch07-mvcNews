@@ -8,9 +8,9 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 <script type="text/javascript">
 window.onload = function() {
-	let myForm = document.getElementById('modify_form');
+	const myForm = document.getElementById('modify_form');
 	myForm.onsubmit=function(){
-		let items = document.querySelectorAll('input[type="text"],input[type="password"],input[type="email"],textarea');
+		let items = document.querySelectorAll('.input-check');
 			for(let i=0; i<items.length; i++){
 				if(items[i].value.trim()==''){
 					let label = document.querySelector('label[for="'+items[i].id+'"]');

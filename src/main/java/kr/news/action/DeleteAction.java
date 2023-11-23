@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import kr.controller.Action;
 import kr.news.dao.NewsDAO;
 import kr.news.vo.NewsVO;
+import kr.util.FileUtil;
 
 public class DeleteAction implements Action{
 
@@ -23,7 +24,10 @@ public class DeleteAction implements Action{
 		}
 		if(check) {
 			dao.deleteNews(num);
+			//파일 삭제
+			FileUtil.removeFile(request, db_news.getFilename());
 		}
+		//UI 처리 위해서 check 저장
 		request.setAttribute("check", check);
 		return "/WEB-INF/views/delete.jsp";
 	}

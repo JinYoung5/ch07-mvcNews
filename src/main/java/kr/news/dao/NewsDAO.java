@@ -134,17 +134,25 @@ public class NewsDAO {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		String sql = null;
+		String sub_sql = ""; //null 되면 안되기에 빈 문자열로 지정
+		int cnt = 0;
 		
 		try {
 			conn = DBUtil.getConnection();
-			sql = "UPDATE dailynews SET title=?,writer=?,email=?,article=?,filename=? WHERE num=?";
+			if(vo.getFilename()!=null) {
+				//파일이 업로드된 경우
+				sub_sql += ",filename=?";
+			}
+			sql = "UPDATE dailynews SET title=?,writer=?,email=?,article=?"+sub_sql+" WHERE num=?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, vo.getTitle());
-			pstmt.setString(2, vo.getWriter());
-			pstmt.setString(3, vo.getEmail());
-			pstmt.setString(4, vo.getArticle());
-			pstmt.setString(5, vo.getFilename());
-			pstmt.setInt(6, vo.getNum());
+			pstmt.setString(++cnt, vo.getTitle());
+			pstmt.setString(++cnt, vo.getWriter());
+			pstmt.setString(++cnt, vo.getEmail());
+			pstmt.setString(++cnt, vo.getArticle());
+			if(vo.getFilename()!=null) {
+				pstmt.setString(++cnt, vo.getFilename());
+			}
+			pstmt.setInt(++cnt, vo.getNum());
 			pstmt.executeUpdate();
 		}catch(Exception e) {
 			throw new Exception(e);
